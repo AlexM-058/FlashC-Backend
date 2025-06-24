@@ -115,7 +115,10 @@ app.post('/login', express.json(), async (req, res) => {
         sameSite: "none", // important for cross-origin cookies!
         secure: true      // must be true for sameSite: 'none'
       });
-      res.status(200).json({ message: "Login successful." });
+      res.status(200).json({
+        message: "Login successful.",
+        token: token // << adăugat aici
+      });
     } catch (err) {
       console.error('[DEBUG] /login error:', err);
       res.status(500).json({ message: "Internal server error.", debug: err.message, stack: err.stack });
