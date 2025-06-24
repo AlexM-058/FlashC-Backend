@@ -46,7 +46,10 @@ function authenticateToken(req, res, next) {
    
     return originalAuthenticateToken(req, res, next);
   }
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://flash-cardsai.up.railway.app'],
+  credentials: true
+}));
 app.use(cookieParser());
 
 const codes = new Map(); 
