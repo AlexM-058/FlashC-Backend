@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeMongoClient } from './utils/mongo.js';
+import { initializeMongoClient, logCollections } from './utils/mongo.js';
 import nodemailer from 'nodemailer';
 import multer from 'multer';
 import path from 'path';
@@ -18,15 +18,25 @@ import { existsUserFlashcardsCollection,
        existsFlashcardDocument } from './utils/mongo.js';
 import { CompareResponnse } from './utils/gemininapi.js';
 dotenv.config();
+
+const mongoURI = process.env.MONGO_URI;
+if (!mongoURI) {
+  throw new Error("❌ MONGO_URI is missing in .env");
+}
+
+initializeMongoClient(mongoURI);
+
+// Așteaptă câteva milisecunde ca driverul MongoClient să fie inițializat (opțional, dacă logCollections dă erori)
+setTimeout(() => {
+  logCollections('Users-Flash').catch(console.error);
+}, 500);
+
 const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-initializeMongoClient(process.env.MONGO_URI);
-import('./utils/mongo.js').then(({ logCollections }) => logCollections('Users-Flash'));
 
 function authenticateToken(req, res, next) {
     
